@@ -1,122 +1,63 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import ProductCard from './components/ProductCard';
+import CartWidget from './components/CartWidget';
+import ProductForm from './pages/admin/ProductForm';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [productos, setProductos] = useState([
+    { id: 1, nombre: 'Manzana Orgánica', precio: 1200, imagen: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6' },
+    { id: 2, nombre: 'Naranja Fresca', precio: 990, imagen: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b' },
+    { id: 3, nombre: 'Espinaca Silvestre', precio: 850, imagen: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb' },
+  ]);
+
+  const [carrito, setCarrito] = useState([]);
+
+  const handleAddToCart = (product) => {
+    setCarrito((prev) => {
+      const existe = prev.find((item) => item.id === product.id);
+      if (existe) {
+        return prev.map((item) =>
+          item.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item
+        );
+      }
+      return [...prev, { ...product, cantidad: 1 }];
+    });
+  };
+
+  const handleSaveProduct = (nuevoProducto) => {
+    setProductos((prev) => [
+      ...prev,
+      { ...nuevoProducto, id: Date.now(), imagen: 'https://via.placeholder.com/150' }
+    ]);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="container py-4">
+      <header className="mb-4 pb-2 border-bottom d-flex justify-content-between align-items-center">
+        <h1 className="text-success fw-bold">🌱 Huerto Online</h1>
+        <span className="badge bg-success fs-6">React + Bootstrap</span>
+      </header>
 
-      <div className="ticks"></div>
+      <div className="row">
+        {/* Catálogo de Productos */}
+        <div className="col-md-8">
+          <h3 className="mb-3">Productos Disponibles</h3>
+          <div className="row">
+            {productos.map((prod) => (
+              <ProductCard key={prod.id} product={prod} onAddToCart={handleAddToCart} />
+            ))}
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+          <div className="mt-4">
+            <ProductForm onSave={handleSaveProduct} />
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {/* Carrito de Compras */}
+        <div className="col-md-4">
+          <CartWidget items={carrito} />
+        </div>
+      </div>
+    </div>
+  );
 }
-
-export default App
