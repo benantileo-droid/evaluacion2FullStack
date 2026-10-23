@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import ProductCard from '../components/ProductCard';
 import CartWidget from '../components/CartWidget';
 import ProductForm from '../pages/admin/ProductForm';
@@ -8,13 +9,13 @@ import ProductDetail from '../components/ProductDetail';
 // ------------------------------------------------------------------
 // 1. PRODUCT CARD (3 Pruebas)
 // ------------------------------------------------------------------
-describe('Pruebas del Componente ProductCard (Jasmine)', () => {
+describe('Pruebas del Componente ProductCard (Jasmine/Vitest)', () => {
   let mockProduct;
   let mockAddToCartSpy;
 
   beforeEach(() => {
     mockProduct = { id: 1, nombre: 'Manzana Orgánica', precio: 1200, imagen: 'manzana.jpg' };
-    mockAddToCartSpy = jasmine.createSpy('addToCart');
+    mockAddToCartSpy = vi.fn();
   });
 
   it('1. Debe mostrar el nombre y precio del producto en el DOM', () => {
@@ -30,18 +31,18 @@ describe('Pruebas del Componente ProductCard (Jasmine)', () => {
     expect(mockAddToCartSpy).toHaveBeenCalledWith(mockProduct);
   });
 
-  it('3. Debe registrar exactamente 1 interacción por clic con Jasmine Spy', () => {
+  it('3. Debe registrar exactamente 1 interacción por clic con Spy', () => {
     const { getByRole } = render(<ProductCard product={mockProduct} onAddToCart={mockAddToCartSpy} />);
     const btn = getByRole('button', { name: /agregar/i });
     fireEvent.click(btn);
-    expect(mockAddToCartSpy.calls.count()).toBe(1);
+    expect(mockAddToCartSpy).toHaveBeenCalledTimes(1);
   });
 });
 
 // ------------------------------------------------------------------
 // 2. CART WIDGET (3 Pruebas)
 // ------------------------------------------------------------------
-describe('Pruebas del Componente CartWidget (Jasmine)', () => {
+describe('Pruebas del Componente CartWidget (Jasmine/Vitest)', () => {
   let mockItems;
 
   beforeEach(() => {
@@ -70,11 +71,11 @@ describe('Pruebas del Componente CartWidget (Jasmine)', () => {
 // ------------------------------------------------------------------
 // 3. PRODUCT FORM (2 Pruebas)
 // ------------------------------------------------------------------
-describe('Pruebas del Formulario de Administración (Jasmine)', () => {
+describe('Pruebas del Formulario de Administración (Jasmine/Vitest)', () => {
   let mockSaveSpy;
 
   beforeEach(() => {
-    mockSaveSpy = jasmine.createSpy('onSave');
+    mockSaveSpy = vi.fn();
   });
 
   it('7. Debe actualizar el valor del input al escribir en Nombre', () => {
@@ -96,7 +97,7 @@ describe('Pruebas del Formulario de Administración (Jasmine)', () => {
 // ------------------------------------------------------------------
 // 4. PRODUCT DETAIL (2 Pruebas)
 // ------------------------------------------------------------------
-describe('Pruebas de Detalle de Producto (Jasmine)', () => {
+describe('Pruebas de Detalle de Producto (Jasmine/Vitest)', () => {
   it('9. Debe deshabilitar el botón de compra si el stock es 0', () => {
     const sinStock = { id: 1, nombre: 'Tomate', precio: 500, stock: 0 };
     const { getByRole } = render(<ProductDetail product={sinStock} />);
