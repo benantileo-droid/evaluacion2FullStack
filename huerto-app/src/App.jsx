@@ -29,7 +29,11 @@ const [productos, setProductos] = useState(initialProducts);
       { ...nuevoProducto, id: Date.now(), categoria: 'General', descripcion: 'Producto recién agregado al catálogo.', imagen: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400' }
     ]);
   };
-
+const handleDeleteProduct = (id) => {
+  setProductos((prev) =>
+    prev.filter((producto) => producto.id !== id)
+  );
+};
   const productosFiltrados = productos.filter((prod) => {
     const coincideNombre = prod.nombre.toLowerCase().includes(busqueda.toLowerCase());
     const coincideCategoria = categoriaSeleccionada === 'Todas' || prod.categoria === categoriaSeleccionada;
@@ -113,8 +117,13 @@ const [productos, setProductos] = useState(initialProducts);
               ) : (
                 <div className="row">
                   {productosFiltrados.map((prod) => (
-                    <ProductCard key={prod.id} product={prod} onAddToCart={handleAddToCart} />
-                  ))}
+  <ProductCard
+    key={prod.id}
+    product={prod}
+    onAddToCart={handleAddToCart}
+    onDelete={handleDeleteProduct}
+  />
+))}
                 </div>
               )}
             </div>
