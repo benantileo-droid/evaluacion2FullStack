@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default function ProductForm({ onSave }) {
+export default function ProductForm({ onSave, productoEditando }) {
   const [nombre, setNombre] = useState('');
   const [precio, setPrecio] = useState('');
+useEffect(() => {
+  if (productoEditando) {
+    setNombre(productoEditando.nombre);
+    setPrecio(productoEditando.precio);
+  }
+}, [productoEditando]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

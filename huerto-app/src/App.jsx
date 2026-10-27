@@ -10,6 +10,7 @@ const [productos, setProductos] = useState(initialProducts);
   const [busqueda, setBusqueda] = useState('');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('Todas');
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [productoEditando, setProductoEditando] = useState(null);
 
   const handleAddToCart = (product) => {
     setCarrito((prev) => {
@@ -24,15 +25,42 @@ const [productos, setProductos] = useState(initialProducts);
   };
 
   const handleSaveProduct = (nuevoProducto) => {
-    setProductos((prev) => [
-      ...prev,
-      { ...nuevoProducto, id: Date.now(), categoria: 'General', descripcion: 'Producto recién agregado al catálogo.', imagen: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400' }
-    ]);
-  };
+
+  if (productoEditando) {
+    setProductos((prev) =>
+      prev.map((producto) =>
+        producto.id === productoEditando.id
+          ? { ...producto, ...nuevoProducto }
+          : producto
+      )
+    );
+
+    setProductoEditando(null);
+    setMostrarFormulario(false);
+    return;
+  }
+
+  setProductos((prev) => [
+    ...prev,
+    {
+      ...nuevoProducto,
+      id: Date.now(),
+      categoria: 'General',
+      descripcion: 'Producto recién agregado al catálogo.',
+      imagen: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400'
+    }
+  ]);
+
+  setMostrarFormulario(false);
+};
 const handleDeleteProduct = (id) => {
   setProductos((prev) =>
     prev.filter((producto) => producto.id !== id)
   );
+};
+const handleEditProduct = (producto) => {
+  setProductoEditando(producto);
+  setMostrarFormulario(true);
 };
   const productosFiltrados = productos.filter((prod) => {
     const coincideNombre = prod.nombre.toLowerCase().includes(busqueda.toLowerCase());
@@ -99,7 +127,10 @@ const handleDeleteProduct = (id) => {
         {mostrarFormulario ? (
           <div className="row justify-content-center">
             <div className="col-md-8">
-              <ProductForm onSave={handleSaveProduct} />
+              <ProductForm
+  onSave={handleSaveProduct}
+  productoEditando={productoEditando}
+/>
             </div>
           </div>
         ) : (
@@ -118,11 +149,12 @@ const handleDeleteProduct = (id) => {
                 <div className="row">
                   {productosFiltrados.map((prod) => (
   <ProductCard
-    key={prod.id}
-    product={prod}
-    onAddToCart={handleAddToCart}
-    onDelete={handleDeleteProduct}
-  />
+  key={prod.id}
+  product={prod}
+  onAddToCart={handleAddToCart}
+  onDelete={handleDeleteProduct}
+  onEdit={handleEditProduct}
+/>
 ))}
                 </div>
               )}

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function ProductCard({ product, onAddToCart, onDelete }) {
+export default function ProductCard({ product, onAddToCart, onDelete, onEdit }) {
   return (
     <div className="col-12 col-sm-6 col-md-6 col-lg-6 mb-4">
       <div className="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
@@ -31,6 +31,12 @@ export default function ProductCard({ product, onAddToCart, onDelete }) {
   className="btn btn-danger px-3 rounded-pill fw-bold shadow-sm ms-2"
 >
   Eliminar
+</button>
+<button
+  onClick={() => onEdit(product)}
+  className="btn btn-warning px-3 rounded-pill fw-bold shadow-sm ms-2"
+>
+  Editar
 </button>
           </div>
         </div>
