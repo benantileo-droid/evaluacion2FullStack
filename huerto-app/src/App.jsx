@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ProductCard from './components/ProductCard';
 import CartWidget from './components/CartWidget';
 import ProductForm from './pages/admin/ProductForm';
-import { initialProducts } from "./data/products";
+import { initialProducts } from "./data/productos";
 
 export default function app(){
 const [productos, setProductos] = useState(initialProducts);
