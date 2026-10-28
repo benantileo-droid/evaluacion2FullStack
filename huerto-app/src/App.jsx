@@ -10,6 +10,7 @@ import Categoria from './pages/Categoria';
 import Ofertas from './pages/Ofertas';
 import Carrito from './pages/Carrito';
 import Checkout from './pages/Checkout';
+import CompraExitosa from './pages/CompraExitosa';
 
 export default function app(){
 const [productos, setProductos] = useState(() => {
@@ -39,6 +40,9 @@ const [productos, setProductos] = useState(() => {
       return [...prev, { ...product, cantidad: 1 }];
     });
   };
+  const handleClearCart = () => {
+  setCarrito([]);
+};
   const handleRemoveFromCart = (id) => {
   setCarrito((prev) =>
     prev.filter((producto) => producto.id !== id)
@@ -215,8 +219,15 @@ const handleEditProduct = (producto) => {
 <Route
   path="/checkout"
   element={
-    <Checkout carrito={carrito} />
+    <Checkout
+      carrito={carrito}
+      onClearCart={handleClearCart}
+    />
   }
+/>
+<Route
+  path="/compra-exitosa"
+  element={<CompraExitosa />}
 />
   </Routes>
       {/* 3. CONTENIDO PRINCIPAL */}

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function ProductDetail({ product }) {
+export default function ProductDetail({ product, onAddToCart }) {
   if (!product) return null;
 
   return (
@@ -8,12 +8,12 @@ export default function ProductDetail({ product }) {
       <h2 className="text-success">{product.nombre}</h2>
       <p className="lead">{product.descripcion}</p>
       <p className="h4 text-primary mb-3">${product.precio}</p>
-      <button 
-        className="btn btn-success me-2" 
-        disabled={product.stock === 0}
-      >
-        {product.stock === 0 ? 'Sin Stock' : 'Comprar Ahora'}
-      </button>
+      <button
+  className="btn btn-success me-2"
+  onClick={() => onAddToCart(product)}
+>
+  Agregar al carrito
+</button>
     </div>
   );
 }

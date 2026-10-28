@@ -1,10 +1,22 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export default function Checkout({ carrito }) {
+export default function Checkout({ carrito, onClearCart }) {
   const [nombre, setNombre] = useState('');
   const [direccion, setDireccion] = useState('');
   const [comuna, setComuna] = useState('');
   const [tipoEntrega, setTipoEntrega] = useState('Domicilio');
+  const navigate = useNavigate();
+
+const confirmarCompra = () => {
+  if (nombre === '' || direccion === '' || comuna === '') {
+    alert('Por favor completa todos los datos.');
+    return;
+  }
+
+  onClearCart();
+  navigate('/compra-exitosa');
+};
   const total = carrito.reduce(
   (acumulador, producto) =>
     acumulador + producto.precio * producto.cantidad,
@@ -103,9 +115,12 @@ export default function Checkout({ carrito }) {
     </strong>
   </div>
 </div>
-              <button className="btn btn-success w-100 rounded-pill">
-                Confirmar compra
-              </button>
+              <button
+  className="btn btn-success w-100 rounded-pill"
+  onClick={confirmarCompra}
+>
+  Confirmar compra
+</button>
             </div>
           </div>
         </div>
