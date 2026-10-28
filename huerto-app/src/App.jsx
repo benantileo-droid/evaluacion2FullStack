@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Productos from './pages/Productos';
 import Categoria from './pages/Categoria';
 import Ofertas from './pages/Ofertas';
+import Carrito from './pages/Carrito';
 
 export default function app(){
 const [productos, setProductos] = useState(() => {
@@ -37,6 +38,32 @@ const [productos, setProductos] = useState(() => {
       return [...prev, { ...product, cantidad: 1 }];
     });
   };
+  const handleRemoveFromCart = (id) => {
+  setCarrito((prev) =>
+    prev.filter((producto) => producto.id !== id)
+  );
+};
+const handleIncreaseQuantity = (id) => {
+  setCarrito((prev) =>
+    prev.map((producto) =>
+      producto.id === id
+        ? { ...producto, cantidad: producto.cantidad + 1 }
+        : producto
+    )
+  );
+};
+
+const handleDecreaseQuantity = (id) => {
+  setCarrito((prev) =>
+    prev
+      .map((producto) =>
+        producto.id === id
+          ? { ...producto, cantidad: producto.cantidad - 1 }
+          : producto
+      )
+      .filter((producto) => producto.cantidad > 0)
+  );
+};
 
   const handleSaveProduct = (nuevoProducto) => {
 
@@ -109,6 +136,12 @@ const handleEditProduct = (producto) => {
   <Link className="text-white text-decoration-none fw-semibold" to="/ofertas">
     Ofertas
   </Link>
+  <Link
+  className="text-white text-decoration-none fw-semibold"
+  to="/carrito"
+>
+  🛒 Carrito ({carrito.length})
+</Link>
 </div>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span className="navbar-toggler-icon"></span>
@@ -165,6 +198,17 @@ const handleEditProduct = (producto) => {
       productos={productos}
       onAddToCart={handleAddToCart}
     />
+  }
+/>
+<Route
+  path="/carrito"
+  element={
+    <Carrito
+  carrito={carrito}
+  onRemove={handleRemoveFromCart}
+  onIncrease={handleIncreaseQuantity}
+  onDecrease={handleDecreaseQuantity}
+/>
   }
 />
   </Routes>
