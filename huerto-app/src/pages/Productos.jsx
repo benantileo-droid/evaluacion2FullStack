@@ -1,0 +1,46 @@
+import React from 'react';
+import ProductCard from '../components/ProductCard';
+
+export default function Productos({
+  productos,
+  productosFiltrados,
+  categoriaSeleccionada,
+  setCategoriaSeleccionada,
+  onAddToCart,
+  onDelete,
+  onEdit
+}) {
+  return (
+    <div className="container py-5">
+      <h1 className="fw-bold text-success mb-4">
+        Nuestros Productos
+      </h1>
+<div className="d-flex gap-2 mb-4">
+  {['Todas', 'Frutas', 'Verduras'].map((cat) => (
+    <button
+      key={cat}
+      className={`btn rounded-pill px-4 ${
+        categoriaSeleccionada === cat
+          ? 'btn-success'
+          : 'btn-outline-success'
+      }`}
+      onClick={() => setCategoriaSeleccionada(cat)}
+    >
+      {cat}
+    </button>
+  ))}
+</div>
+      <div className="row">
+        {productosFiltrados.map((producto) => (
+          <ProductCard
+            key={producto.id}
+            product={producto}
+            onAddToCart={onAddToCart}
+            onDelete={onDelete}
+            onEdit={onEdit}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}

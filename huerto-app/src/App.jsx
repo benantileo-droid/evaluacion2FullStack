@@ -3,6 +3,11 @@ import ProductCard from './components/ProductCard';
 import CartWidget from './components/CartWidget';
 import ProductForm from './pages/admin/ProductForm';
 import { initialProducts } from "./data/productos";
+import { Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import Productos from './pages/Productos';
+import Categoria from './pages/Categoria';
+import Ofertas from './pages/Ofertas';
 
 export default function app(){
 const [productos, setProductos] = useState(() => {
@@ -82,9 +87,29 @@ const handleEditProduct = (producto) => {
       {/* 1. NAVBAR */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-success sticky-top shadow-sm">
         <div className="container">
-          <a className="navbar-brand fw-bold fs-3 text-white d-flex align-items-center gap-2" href="#">
-            🌱 Huerto Hogar
-          </a>
+          <Link
+  className="navbar-brand fw-bold fs-3 text-white d-flex align-items-center gap-2"
+  to="/"
+>
+  🌱 Huerto Hogar
+</Link>
+<div className="d-none d-lg-flex gap-3 ms-4">
+  <Link className="text-white text-decoration-none fw-semibold" to="/">
+    Inicio
+  </Link>
+
+  <Link className="text-white text-decoration-none fw-semibold" to="/productos">
+    Productos
+  </Link>
+
+  <Link className="text-white text-decoration-none fw-semibold" to="/categorias">
+    Categorías
+  </Link>
+
+  <Link className="text-white text-decoration-none fw-semibold" to="/ofertas">
+    Ofertas
+  </Link>
+</div>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -109,81 +134,60 @@ const handleEditProduct = (producto) => {
           </div>
         </div>
       </nav>
-
-      {/* 2. HERO BANNER */}
-      {!mostrarFormulario && (
-        <div className="bg-success text-white py-5 mb-4 shadow-sm" style={{ background: 'linear-gradient(135deg, #198754 0%, #146c43 100%)' }}>
-          <div className="container text-center py-3">
-            <h1 className="display-4 fw-bold">Productos Orgánicos Directo a tu Mesa</h1>
-            <p className="lead">Cosecha fresca del día, cultivada con procesos sustentables y libres de químicos.</p>
-            <div className="d-flex justify-content-center gap-2 mt-3">
-              {['Todas', 'Frutas', 'Verduras'].map((cat) => (
-                <button
-                  key={cat}
-                  className={`btn rounded-pill px-4 ${categoriaSeleccionada === cat ? 'btn-light text-success fw-bold' : 'btn-outline-light'}`}
-                  onClick={() => setCategoriaSeleccionada(cat)}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 3. CONTENIDO PRINCIPAL */}
-      <div className="container my-4 flex-grow-1">
-        {mostrarFormulario ? (
-          <div className="row justify-content-center">
-            <div className="col-md-8">
-              <ProductForm
-  onSave={handleSaveProduct}
-  productoEditando={productoEditando}
-/>
-            </div>
-          </div>
-        ) : (
-          <div className="row g-4">
-            {/* Lista de Productos */}
-            <div className="col-lg-8">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h3 className="fw-bold text-success m-0">Catálogo ({productosFiltrados.length})</h3>
-              </div>
-
-              {productosFiltrados.length === 0 ? (
-                <div className="alert alert-warning text-center my-4">
-                  No se encontraron productos que coincidan con tu búsqueda.
-                </div>
-              ) : (
-                <div className="row">
-                  {productosFiltrados.map((prod) => (
-  <ProductCard
-  key={prod.id}
-  product={prod}
+      <Routes>
+  <Route path="/" element={<Home />} />
+  <Route
+  path="/productos"
+  element={
+    <Productos
+  productos={productos}
+  productosFiltrados={productosFiltrados}
+  categoriaSeleccionada={categoriaSeleccionada}
+  setCategoriaSeleccionada={setCategoriaSeleccionada}
   onAddToCart={handleAddToCart}
   onDelete={handleDeleteProduct}
   onEdit={handleEditProduct}
 />
-))}
-                </div>
-              )}
-            </div>
-
-            {/* Widget del Carrito */}
-            <div className="col-lg-4">
-              <div className="sticky-top" style={{ top: '90px' }}>
-                <CartWidget items={carrito} />
-              </div>
-            </div>
-          </div>
-        )}
+  }
+/>
+  <Route
+  path="/categorias"
+  element={
+    <Categoria
+      setCategoriaSeleccionada={setCategoriaSeleccionada}
+    />
+  }
+/>
+  <Route
+  path="/ofertas"
+  element={
+    <Ofertas
+      productos={productos}
+      onAddToCart={handleAddToCart}
+    />
+  }
+/>
+  </Routes>
+      {/* 3. CONTENIDO PRINCIPAL */}
+      {/* 3. FORMULARIO DE ADMINISTRACIÓN */}
+{mostrarFormulario && (
+  <div className="container my-4 flex-grow-1">
+    <div className="row justify-content-center">
+      <div className="col-md-8">
+        <ProductForm
+          onSave={handleSaveProduct}
+          productoEditando={productoEditando}
+        />
       </div>
+    </div>
+  </div>
+)}
 
      {/* 4. FOOTER */}
       <footer className="bg-dark text-white py-4 mt-5">
         <div className="container text-center">
           <p className="m-0 fw-light">🌱 <strong>Huerto Hogar</strong> - Evaluación FullStack DSY1104 | Duoc UC</p>
-          <small className="text-secondary">Desarrollado con React, Bootstrap y Vitest</small>
+          <small className="text-secondary">Desarrollado con React, Bootstrap y Vitest</small>S
         </div>
       </footer>
     </div>
