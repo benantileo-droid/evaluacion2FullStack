@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Carrito({
   carrito,
@@ -75,10 +76,17 @@ export default function Carrito({
           ))}
 
           <div className="text-end mt-4">
-            <h3 className="fw-bold">
-              Total: ${total}
-            </h3>
-          </div>
+  <h3 className="fw-bold">
+    Total: ${total}
+  </h3>
+
+  <Link
+    to="/checkout"
+    className="btn btn-success rounded-pill px-4 mt-2"
+  >
+    Ir al Checkout
+  </Link>
+</div>
         </div>
       )}
     </div>

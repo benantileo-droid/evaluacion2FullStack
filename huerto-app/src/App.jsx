@@ -9,6 +9,7 @@ import Productos from './pages/Productos';
 import Categoria from './pages/Categoria';
 import Ofertas from './pages/Ofertas';
 import Carrito from './pages/Carrito';
+import Checkout from './pages/Checkout';
 
 export default function app(){
 const [productos, setProductos] = useState(() => {
@@ -209,6 +210,12 @@ const handleEditProduct = (producto) => {
   onIncrease={handleIncreaseQuantity}
   onDecrease={handleDecreaseQuantity}
 />
+  }
+/>
+<Route
+  path="/checkout"
+  element={
+    <Checkout carrito={carrito} />
   }
 />
   </Routes>
