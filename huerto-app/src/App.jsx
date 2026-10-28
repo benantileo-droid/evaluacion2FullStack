@@ -17,6 +17,7 @@ import Nosotros from './pages/Nosotros';
 import Contacto from './pages/Contacto';
 import Blog from './pages/Blogs';
 import BlogDetail from './pages/BlogDetail';
+import CompraFallida from './pages/CompraFallida';
 
 export default function app(){
 const [productos, setProductos] = useState(() => {
@@ -287,6 +288,10 @@ const handleEditProduct = (producto) => {
 <Route
   path="/blog/:id"
   element={<BlogDetail />}
+/>
+<Route
+  path="/compra-fallida"
+  element={<CompraFallida />}
 />
   </Routes>
       {/* 3. CONTENIDO PRINCIPAL */}

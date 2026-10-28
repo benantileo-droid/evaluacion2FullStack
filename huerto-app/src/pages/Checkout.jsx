@@ -7,6 +7,12 @@ export default function Checkout({ carrito, onClearCart }) {
   const [comuna, setComuna] = useState('');
   const [tipoEntrega, setTipoEntrega] = useState('Domicilio');
   const navigate = useNavigate();
+  const [estadoPago, setEstadoPago] = useState('aprobado');
+  const total = carrito.reduce(
+  (acumulador, producto) =>
+    acumulador + producto.precio * producto.cantidad,
+  0
+);
 
 const confirmarCompra = () => {
   if (nombre === '' || direccion === '' || comuna === '') {
@@ -14,14 +20,14 @@ const confirmarCompra = () => {
     return;
   }
 
+  if (estadoPago === 'rechazado') {
+    navigate('/compra-fallida');
+    return;
+  }
+
   onClearCart();
   navigate('/compra-exitosa');
 };
-  const total = carrito.reduce(
-  (acumulador, producto) =>
-    acumulador + producto.precio * producto.cantidad,
-  0
-);
 
   return (
     <div className="container py-5">
@@ -90,6 +96,25 @@ const confirmarCompra = () => {
                   </option>
                 </select>
               </div>
+          <div className="mb-4">
+  <label className="form-label fw-semibold">
+    Resultado de pago
+  </label>
+
+  <select
+    className="form-select"
+    value={estadoPago}
+    onChange={(e) => setEstadoPago(e.target.value)}
+  >
+    <option value="aprobado">
+      Pago aprobado
+    </option>
+
+    <option value="rechazado">
+      Pago rechazado
+    </option>
+  </select>
+</div>    
 <div className="border-top pt-4 mb-4">
   <h4 className="fw-bold mb-3">Resumen de compra</h4>
 
