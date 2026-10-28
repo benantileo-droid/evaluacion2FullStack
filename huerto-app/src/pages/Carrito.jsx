@@ -75,10 +75,26 @@ export default function Carrito({
             </div>
           ))}
 
-          <div className="text-end mt-4">
+                    <div className="text-end mt-4">
             <h3 className="fw-bold">
               Total: ${total}
             </h3>
+
+            <div className="d-flex justify-content-end gap-2 mt-3">
+              <Link
+                to="/productos"
+                className="btn btn-outline-secondary rounded-pill px-4"
+              >
+                Seguir comprando
+              </Link>
+
+              <Link
+                to="/checkout"
+                className="btn btn-success rounded-pill px-4"
+              >
+                Ir a pagar
+              </Link>
+            </div>
           </div>
         </div>
       )}

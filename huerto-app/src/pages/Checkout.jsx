@@ -25,6 +25,19 @@ const confirmarCompra = () => {
     return;
   }
 
+   const orden = {
+    numero: 'ORD-' + Date.now(),
+    fecha: new Date().toLocaleString('es-CL'),
+    nombre,
+    direccion,
+    comuna,
+    tipoEntrega,
+    productos: carrito,
+    total
+  };
+
+  localStorage.setItem('ultimaOrden', JSON.stringify(orden));
+
   onClearCart();
   navigate('/compra-exitosa');
 };
