@@ -1,64 +1,64 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-export default function Login() {
-  const [correo, setCorreo] = useState('');
-  const [password, setPassword] = useState('');
+const Login = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
 
-  const iniciarSesion = () => {
-    if (correo === '' || password === '') {
-      alert('Por favor completa todos los campos.');
-      return;
+  const [errores, setErrores] = useState({});
+
+  const validar = () => {
+    let nuevosErrores = {};
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!formData.email) {
+      nuevosErrores.email = 'El correo es obligatorio';
+    } else if (!regexEmail.test(formData.email)) {
+      nuevosErrores.email = 'El formato del correo no es válido';
+    }
+    
+    if (!formData.password) {
+      nuevosErrores.password = 'La contraseña es obligatoria';
     }
 
-    alert('Inicio de sesión exitoso.');
+    setErrores(nuevosErrores);
+    return Object.keys(nuevosErrores).length === 0;
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validar()) {
+      console.log('Formulario de login válido:', formData);
+      alert('Inicio de sesión exitoso');
+      // Aquí puedes agregar la lógica para autenticar en tu backend
+    }
   };
 
   return (
-    <div className="container py-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body p-4">
-              <h1 className="fw-bold text-success mb-4">
-                Iniciar Sesión
-              </h1>
-
-              <div className="mb-3">
-                <label className="form-label">
-                  Correo
-                </label>
-                <input
-                  type="email"
-                  className="form-control"
-                  value={correo}
-                  onChange={(e) => setCorreo(e.target.value)}
-                  placeholder="correo@ejemplo.cl"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="form-label">
-                  Contraseña
-                </label>
-                <input
-                  type="password"
-                  className="form-control"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Ingresa tu contraseña"
-                />
-              </div>
-
-              <button
-                className="btn btn-success w-100 rounded-pill"
-                onClick={iniciarSesion}
-              >
-                Iniciar sesión
-              </button>
-            </div>
-          </div>
+    <div className="container mt-5">
+      <h2>Iniciar Sesión</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label className="form-label">Correo Electrónico</label>
+          <input type="email" name="email" className="form-control" value={formData.email} onChange={handleChange} />
+          {errores.email && <small className="text-danger">{errores.email}</small>}
         </div>
-      </div>
+
+        <div className="mb-3">
+          <label className="form-label">Contraseña</label>
+          <input type="password" name="password" className="form-control" value={formData.password} onChange={handleChange} />
+          {errores.password && <small className="text-danger">{errores.password}</small>}
+        </div>
+
+        <button type="submit" className="btn btn-primary">Ingresar</button>
+      </form>
     </div>
   );
-}
+};
+
+export default Login;
