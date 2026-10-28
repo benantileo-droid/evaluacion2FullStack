@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function ProductCard({ product, onAddToCart, onDelete, onEdit }) {
   return (
@@ -38,6 +39,12 @@ export default function ProductCard({ product, onAddToCart, onDelete, onEdit }) 
 >
   Editar
 </button>
+<Link
+  to={`/productos/${product.id}`}
+  className="btn btn-outline-success"
+>
+  Ver detalle
+</Link>
           </div>
         </div>
       </div>

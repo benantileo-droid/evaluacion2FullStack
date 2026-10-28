@@ -1,6 +1,22 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
-export default function ProductDetail({ product, onAddToCart }) {
+export default function ProductDetail({ productos, onAddToCart }) {
+  const { id } = useParams();
+
+  const product = productos.find(
+    (producto) => producto.id === Number(id)
+  );
+
+  if (!product) {
+    return (
+      <div className="container py-5">
+        <div className="alert alert-danger">
+          Producto no encontrado.
+        </div>
+      </div>
+    );
+  }
   if (!product) return null;
 
   return (

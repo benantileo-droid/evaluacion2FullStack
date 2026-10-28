@@ -11,6 +11,7 @@ import Ofertas from './pages/Ofertas';
 import Carrito from './pages/Carrito';
 import Checkout from './pages/Checkout';
 import CompraExitosa from './pages/CompraExitosa';
+import ProductDetail from './components/ProductDetail';
 
 export default function app(){
 const [productos, setProductos] = useState(() => {
@@ -228,6 +229,15 @@ const handleEditProduct = (producto) => {
 <Route
   path="/compra-exitosa"
   element={<CompraExitosa />}
+/>
+<Route
+  path="/productos/:id"
+  element={
+    <ProductDetail
+      productos={productos}
+      onAddToCart={handleAddToCart}
+    />
+  }
 />
   </Routes>
       {/* 3. CONTENIDO PRINCIPAL */}
