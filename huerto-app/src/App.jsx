@@ -12,6 +12,11 @@ import Carrito from './pages/Carrito';
 import Checkout from './pages/Checkout';
 import CompraExitosa from './pages/CompraExitosa';
 import ProductDetail from './components/ProductDetail';
+import Registro from './pages/Registro';
+import Nosotros from './pages/Nosotros';
+import Contacto from './pages/Contacto';
+import Blog from './pages/Blogs';
+import BlogDetail from './pages/BlogDetail';
 
 export default function app(){
 const [productos, setProductos] = useState(() => {
@@ -130,7 +135,30 @@ const handleEditProduct = (producto) => {
   <Link className="text-white text-decoration-none fw-semibold" to="/">
     Inicio
   </Link>
-
+  <Link
+  className="text-white text-decoration-none fw-semibold"
+  to="/registro"
+>
+  Registro
+</Link>
+<Link
+  className="text-white text-decoration-none fw-semibold"
+  to="/blog"
+>
+  Blog
+</Link>
+<Link
+  className="text-white text-decoration-none fw-semibold"
+  to="/nosotros"
+>
+  Nosotros
+</Link>
+<Link
+  className="text-white text-decoration-none fw-semibold"
+  to="/contacto"
+>
+  Contacto
+</Link>
   <Link className="text-white text-decoration-none fw-semibold" to="/productos">
     Productos
   </Link>
@@ -238,6 +266,27 @@ const handleEditProduct = (producto) => {
       onAddToCart={handleAddToCart}
     />
   }
+/>
+<Route
+  path="/registro"
+  element={<Registro />}
+/>
+<Route
+  path="/nosotros"
+  element={<Nosotros />}
+/>
+<Route
+  path="/contacto"
+  element={<Contacto />}
+/>
+<Route
+  path="/blog"
+  element={<Blog />}
+/>
+
+<Route
+  path="/blog/:id"
+  element={<BlogDetail />}
 />
   </Routes>
       {/* 3. CONTENIDO PRINCIPAL */}
