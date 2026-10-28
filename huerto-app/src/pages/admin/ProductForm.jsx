@@ -7,6 +7,9 @@ useEffect(() => {
   if (productoEditando) {
     setNombre(productoEditando.nombre);
     setPrecio(productoEditando.precio);
+  } else {
+    setNombre('');
+    setPrecio('');
   }
 }, [productoEditando]);
 
