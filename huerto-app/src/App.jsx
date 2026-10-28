@@ -19,6 +19,7 @@ import Nosotros from './pages/Nosotros';
 import Contacto from './pages/Contacto';
 import Blog from './pages/Blogs';
 import BlogDetail from './pages/BlogDetail';
+import UsuariosAdmin from './pages/admin/UsuariosAdmin';
 
 export default function App() {
 
@@ -120,6 +121,29 @@ export default function App() {
   const handleLogin = (usuario) => {
     setUsuarioActual(usuario);
   };
+  const handleCompraExitosa = (orden) => {
+  if (!usuarioActual) {
+    return;
+  }
+
+  const nuevasCompras = [
+    ...(usuarioActual.compras || []),
+    orden
+  ];
+
+  setUsuarios((prev) =>
+    prev.map((usuario) =>
+      usuario.id === usuarioActual.id
+        ? { ...usuario, compras: nuevasCompras }
+        : usuario
+    )
+  );
+
+  setUsuarioActual((prev) => ({
+    ...prev,
+    compras: nuevasCompras
+  }));
+};
 
 
   // =========================
@@ -483,6 +507,14 @@ export default function App() {
                   {modoAdmin ? 'Salir Admin' : '⚙️ Admin'}
                 </button>
               )}
+              {usuarioActual?.rol === 'admin' && (
+  <Link
+    to="/admin/usuarios"
+    className="btn btn-outline-light rounded-pill text-nowrap"
+  >
+    👥 Usuarios
+  </Link>
+)}
 
             </div>
 
@@ -612,15 +644,26 @@ export default function App() {
         {/* CHECKOUT */}
 
         <Route
-          path="/checkout"
-          element={
-            <Checkout
-              carrito={carrito}
-              onClearCart={handleClearCart}
-              usuarioActual={usuarioActual}
-            />
-          }
-        />
+  path="/checkout"
+  element={
+    <Checkout
+      carrito={carrito}
+      onClearCart={handleClearCart}
+      usuarioActual={usuarioActual}
+      onCompraExitosa={handleCompraExitosa}
+    />
+  }
+/>
+<Route
+  path="/admin/usuarios"
+  element={
+    usuarioActual?.rol === 'admin' ? (
+      <UsuariosAdmin usuarios={usuarios} />
+    ) : (
+      <Home />
+    )
+  }
+/>
 
 
         {/* COMPRA EXITOSA */}

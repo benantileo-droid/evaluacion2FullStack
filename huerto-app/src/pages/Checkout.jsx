@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 export default function Checkout({
   carrito,
   onClearCart,
-  usuarioActual
+  usuarioActual,
+  onCompraExitosa
 }) {
-
   const [nombre, setNombre] = useState(
     usuarioActual?.nombre || ''
   );
@@ -54,13 +54,17 @@ export default function Checkout({
     };
 
     localStorage.setItem(
-      'ultimaOrden',
-      JSON.stringify(orden)
-    );
+  'ultimaOrden',
+  JSON.stringify(orden)
+);
 
-    onClearCart();
+if (usuarioActual) {
+  onCompraExitosa(orden);
+}
 
-    navigate('/compra-exitosa');
+onClearCart();
+
+navigate('/compra-exitosa');
   };
 
   return (
