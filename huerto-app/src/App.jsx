@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductCard from './components/ProductCard';
 import CartWidget from './components/CartWidget';
 import ProductForm from './pages/admin/ProductForm';
 import { initialProducts } from "./data/productos";
 
 export default function app(){
-const [productos, setProductos] = useState(initialProducts);
+const [productos, setProductos] = useState(() => {
+  const productosGuardados = localStorage.getItem('productos');
+
+  return productosGuardados
+    ? JSON.parse(productosGuardados)
+    : initialProducts;
+});
   const [carrito, setCarrito] = useState([]);
   const [busqueda, setBusqueda] = useState('');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('Todas');
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
 
+  useEffect(() => {
+  localStorage.setItem('productos', JSON.stringify(productos));
+}, [productos]);
   const handleAddToCart = (product) => {
     setCarrito((prev) => {
       const existe = prev.find((item) => item.id === product.id);
