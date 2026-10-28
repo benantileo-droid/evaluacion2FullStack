@@ -33,7 +33,13 @@ export default function App() {
       : initialProducts;
   });
 
-  const [carrito, setCarrito] = useState([]);
+  const [carrito, setCarrito] = useState(() => {
+  const carritoGuardado = localStorage.getItem('carrito');
+
+  return carritoGuardado
+    ? JSON.parse(carritoGuardado)
+    : [];
+});
   const [busqueda, setBusqueda] = useState('');
   const [categoriaSeleccionada, setCategoriaSeleccionada] =
     useState('Todas');
@@ -58,6 +64,13 @@ export default function App() {
       JSON.stringify(productos)
     );
   }, [productos]);
+
+  useEffect(() => {
+  localStorage.setItem(
+    'carrito',
+    JSON.stringify(carrito)
+  );
+}, [carrito]);
 
 
   // =========================
