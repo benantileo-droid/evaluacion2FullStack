@@ -19,6 +19,8 @@ import Blog from './pages/Blogs';
 import BlogDetail from './pages/BlogDetail';
 
 export default function App() {
+
+  // PRODUCTOS
   const [productos, setProductos] = useState(() => {
     const productosGuardados = localStorage.getItem('productos');
 
@@ -27,16 +29,25 @@ export default function App() {
       : initialProducts;
   });
 
+  // CARRITO
   const [carrito, setCarrito] = useState([]);
+
+  // BÚSQUEDA Y CATEGORÍAS
   const [busqueda, setBusqueda] = useState('');
   const [categoriaSeleccionada, setCategoriaSeleccionada] =
     useState('Todas');
 
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [productoEditando, setProductoEditando] = useState(null);
-  const [modoAdmin, setModoAdmin] = useState(false);
+  // ADMINISTRACIÓN
+  const [mostrarFormulario, setMostrarFormulario] =
+    useState(false);
 
-  // Guardar productos en localStorage
+  const [productoEditando, setProductoEditando] =
+    useState(null);
+
+  const [modoAdmin, setModoAdmin] =
+    useState(false);
+
+  // GUARDAR PRODUCTOS EN LOCALSTORAGE
   useEffect(() => {
     localStorage.setItem(
       'productos',
@@ -44,9 +55,13 @@ export default function App() {
     );
   }, [productos]);
 
-  // Agregar producto al carrito
+  // =========================
+  // CARRITO
+  // =========================
+
   const handleAddToCart = (product) => {
     setCarrito((prev) => {
+
       const existe = prev.find(
         (item) => item.id === product.id
       );
@@ -72,12 +87,10 @@ export default function App() {
     });
   };
 
-  // Vaciar carrito
   const handleClearCart = () => {
     setCarrito([]);
   };
 
-  // Eliminar producto del carrito
   const handleRemoveFromCart = (id) => {
     setCarrito((prev) =>
       prev.filter(
@@ -86,7 +99,6 @@ export default function App() {
     );
   };
 
-  // Aumentar cantidad
   const handleIncreaseQuantity = (id) => {
     setCarrito((prev) =>
       prev.map((producto) =>
@@ -100,7 +112,6 @@ export default function App() {
     );
   };
 
-  // Disminuir cantidad
   const handleDecreaseQuantity = (id) => {
     setCarrito((prev) =>
       prev
@@ -118,11 +129,15 @@ export default function App() {
     );
   };
 
-  // Guardar producto nuevo o producto editado
+  // =========================
+  // ADMIN / CRUD PRODUCTOS
+  // =========================
+
   const handleSaveProduct = (nuevoProducto) => {
-    // Si hay un producto seleccionado,
-    // significa que estamos editando
+
+    // EDITAR
     if (productoEditando) {
+
       setProductos((prev) =>
         prev.map((producto) =>
           producto.id === productoEditando.id
@@ -136,11 +151,11 @@ export default function App() {
 
       setProductoEditando(null);
       setMostrarFormulario(false);
+
       return;
     }
 
-    // Si no estamos editando,
-    // creamos un producto nuevo
+    // CREAR
     setProductos((prev) => [
       ...prev,
       {
@@ -157,8 +172,9 @@ export default function App() {
     setMostrarFormulario(false);
   };
 
-  // Eliminar producto del catálogo
+  // ELIMINAR PRODUCTO
   const handleDeleteProduct = (id) => {
+
     setProductos((prev) =>
       prev.filter(
         (producto) => producto.id !== id
@@ -166,12 +182,12 @@ export default function App() {
     );
   };
 
-  // Editar producto
+  // EDITAR PRODUCTO
   const handleEditProduct = (producto) => {
+
     setProductoEditando(producto);
     setMostrarFormulario(true);
 
-    // Baja automáticamente hasta el formulario
     setTimeout(() => {
       document
         .getElementById('formulario-admin')
@@ -181,12 +197,12 @@ export default function App() {
     }, 100);
   };
 
-  // Crear producto nuevo
+  // NUEVO PRODUCTO
   const handleNewProduct = () => {
+
     setProductoEditando(null);
     setMostrarFormulario(true);
 
-    // Baja automáticamente hasta el formulario
     setTimeout(() => {
       document
         .getElementById('formulario-admin')
@@ -196,9 +212,13 @@ export default function App() {
     }, 100);
   };
 
-  // Filtrar productos
+  // =========================
+  // FILTRO DE PRODUCTOS
+  // =========================
+
   const productosFiltrados = productos.filter(
     (prod) => {
+
       const coincideNombre = prod.nombre
         .toLowerCase()
         .includes(busqueda.toLowerCase());
@@ -217,156 +237,193 @@ export default function App() {
   return (
     <div className="bg-light min-vh-100 d-flex flex-column">
 
+      {/* ========================= */}
       {/* NAVBAR */}
+      {/* ========================= */}
+
       <nav className="navbar navbar-expand-lg navbar-dark bg-success sticky-top shadow-sm">
+
         <div className="container">
 
+          {/* LOGO */}
           <Link
-            className="navbar-brand fw-bold fs-3 text-white d-flex align-items-center gap-2"
+            className="navbar-brand fw-bold fs-4"
             to="/"
           >
             🌱 Huerto Hogar
           </Link>
 
-          <div className="d-none d-lg-flex gap-3 ms-4">
-
-            <Link
-              className="text-white text-decoration-none fw-semibold"
-              to="/"
-            >
-              Inicio
-            </Link>
-
-            <Link
-              className="text-white text-decoration-none fw-semibold"
-              to="/registro"
-            >
-              Registro
-            </Link>
-
-            <Link
-              className="text-white text-decoration-none fw-semibold"
-              to="/blog"
-            >
-              Blog
-            </Link>
-
-            <Link
-              className="text-white text-decoration-none fw-semibold"
-              to="/nosotros"
-            >
-              Nosotros
-            </Link>
-
-            <Link
-              className="text-white text-decoration-none fw-semibold"
-              to="/contacto"
-            >
-              Contacto
-            </Link>
-
-            <Link
-              className="text-white text-decoration-none fw-semibold"
-              to="/productos"
-            >
-              Productos
-            </Link>
-
-            <Link
-              className="text-white text-decoration-none fw-semibold"
-              to="/categorias"
-            >
-              Categorías
-            </Link>
-
-            <Link
-              className="text-white text-decoration-none fw-semibold"
-              to="/ofertas"
-            >
-              Ofertas
-            </Link>
-
-            <Link
-              className="text-white text-decoration-none fw-semibold"
-              to="/carrito"
-            >
-              🛒 Carrito ({carrito.length})
-            </Link>
-
-          </div>
-
+          {/* BOTÓN HAMBURGUESA */}
           <button
             className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Abrir menú"
           >
             <span className="navbar-toggler-icon"></span>
           </button>
 
+          {/* MENÚ */}
           <div
             className="collapse navbar-collapse"
             id="navbarNav"
           >
 
-            <div className="mx-auto my-2 my-lg-0 w-50">
+            {/* LINKS */}
+            <div className="navbar-nav me-auto">
+
+              <Link
+                className="nav-link"
+                to="/"
+              >
+                Inicio
+              </Link>
+
+              <Link
+                className="nav-link"
+                to="/productos"
+              >
+                Productos
+              </Link>
+
+              <Link
+                className="nav-link"
+                to="/categorias"
+              >
+                Categorías
+              </Link>
+
+              <Link
+                className="nav-link"
+                to="/ofertas"
+              >
+                Ofertas
+              </Link>
+
+              <Link
+                className="nav-link"
+                to="/blog"
+              >
+                Blog
+              </Link>
+
+              <Link
+                className="nav-link"
+                to="/nosotros"
+              >
+                Nosotros
+              </Link>
+
+              <Link
+                className="nav-link"
+                to="/contacto"
+              >
+                Contacto
+              </Link>
+
+              <Link
+                className="nav-link"
+                to="/registro"
+              >
+                Registro
+              </Link>
+
+              <Link
+                className="nav-link text-nowrap"
+                to="/carrito"
+              >
+                🛒 ({carrito.length})
+              </Link>
+
+            </div>
+
+            {/* BUSCADOR + ADMIN */}
+            <div className="d-flex flex-column flex-lg-row gap-2 my-2 my-lg-0">
+
               <input
                 type="text"
                 className="form-control rounded-pill"
-                placeholder="🔍 Buscar frutas, verduras..."
+                placeholder="🔍 Buscar..."
                 value={busqueda}
                 onChange={(e) =>
                   setBusqueda(e.target.value)
                 }
               />
+
+              <button
+                className="btn btn-outline-light rounded-pill text-nowrap"
+                onClick={() => {
+
+                  setModoAdmin(!modoAdmin);
+
+                  setMostrarFormulario(false);
+
+                  setProductoEditando(null);
+                }}
+              >
+                {modoAdmin
+                  ? 'Salir Admin'
+                  : '⚙️ Admin'}
+              </button>
+
             </div>
 
-            <button
-              className="btn btn-outline-light rounded-pill ms-lg-2"
-              onClick={() => {
-                setModoAdmin(!modoAdmin);
-                setMostrarFormulario(false);
-                setProductoEditando(null);
-              }}
-            >
-              {modoAdmin
-                ? 'Salir Admin'
-                : '⚙️ Admin Productos'}
-            </button>
-
           </div>
+
         </div>
+
       </nav>
 
+      {/* ========================= */}
       {/* RUTAS */}
+      {/* ========================= */}
+
       <Routes>
 
+        {/* HOME */}
         <Route
           path="/"
           element={<Home />}
         />
 
+        {/* PRODUCTOS */}
         <Route
           path="/productos"
           element={
             <Productos
               productos={productos}
-              productosFiltrados={productosFiltrados}
+              productosFiltrados={
+                productosFiltrados
+              }
               categoriaSeleccionada={
                 categoriaSeleccionada
               }
               setCategoriaSeleccionada={
                 setCategoriaSeleccionada
               }
-              onAddToCart={handleAddToCart}
-              onDelete={handleDeleteProduct}
-              onEdit={handleEditProduct}
-              modoAdmin={modoAdmin}
-              onNewProduct={handleNewProduct}
+              onAddToCart={
+                handleAddToCart
+              }
+              onDelete={
+                handleDeleteProduct
+              }
+              onEdit={
+                handleEditProduct
+              }
+              modoAdmin={
+                modoAdmin
+              }
+              onNewProduct={
+                handleNewProduct
+              }
             />
           }
         />
 
+        {/* CATEGORÍAS */}
         <Route
           path="/categorias"
           element={
@@ -378,113 +435,164 @@ export default function App() {
           }
         />
 
+        {/* OFERTAS */}
         <Route
           path="/ofertas"
           element={
             <Ofertas
               productos={productos}
-              onAddToCart={handleAddToCart}
+              onAddToCart={
+                handleAddToCart
+              }
             />
           }
         />
 
+        {/* CARRITO */}
         <Route
           path="/carrito"
           element={
             <Carrito
               carrito={carrito}
-              onRemove={handleRemoveFromCart}
-              onIncrease={handleIncreaseQuantity}
-              onDecrease={handleDecreaseQuantity}
+              onRemove={
+                handleRemoveFromCart
+              }
+              onIncrease={
+                handleIncreaseQuantity
+              }
+              onDecrease={
+                handleDecreaseQuantity
+              }
             />
           }
         />
 
+        {/* CHECKOUT */}
         <Route
           path="/checkout"
           element={
             <Checkout
               carrito={carrito}
-              onClearCart={handleClearCart}
+              onClearCart={
+                handleClearCart
+              }
             />
           }
         />
 
+        {/* COMPRA EXITOSA */}
         <Route
           path="/compra-exitosa"
-          element={<CompraExitosa />}
+          element={
+            <CompraExitosa />
+          }
         />
 
+        {/* COMPRA FALLIDA */}
         <Route
           path="/compra-fallida"
-          element={<CompraFallida />}
+          element={
+            <CompraFallida />
+          }
         />
 
+        {/* DETALLE PRODUCTO */}
         <Route
           path="/productos/:id"
           element={
             <ProductDetail
               productos={productos}
-              onAddToCart={handleAddToCart}
+              onAddToCart={
+                handleAddToCart
+              }
             />
           }
         />
 
+        {/* REGISTRO */}
         <Route
           path="/registro"
-          element={<Registro />}
+          element={
+            <Registro />
+          }
         />
 
+        {/* NOSOTROS */}
         <Route
           path="/nosotros"
-          element={<Nosotros />}
+          element={
+            <Nosotros />
+          }
         />
 
+        {/* CONTACTO */}
         <Route
           path="/contacto"
-          element={<Contacto />}
+          element={
+            <Contacto />
+          }
         />
 
+        {/* BLOG */}
         <Route
           path="/blog"
-          element={<Blog />}
+          element={
+            <Blog />
+          }
         />
 
+        {/* DETALLE BLOG */}
         <Route
           path="/blog/:id"
-          element={<BlogDetail />}
+          element={
+            <BlogDetail />
+          }
         />
 
       </Routes>
 
-      {/* FORMULARIO DEL ADMIN */}
+      {/* ========================= */}
+      {/* FORMULARIO ADMIN */}
+      {/* ========================= */}
+
       {mostrarFormulario && (
+
         <div
           id="formulario-admin"
           className="container my-4 flex-grow-1"
         >
+
           <div className="row justify-content-center">
+
             <div className="col-md-8">
 
               <ProductForm
-                onSave={handleSaveProduct}
+                onSave={
+                  handleSaveProduct
+                }
                 productoEditando={
                   productoEditando
                 }
               />
 
             </div>
+
           </div>
+
         </div>
+
       )}
 
+      {/* ========================= */}
       {/* FOOTER */}
+      {/* ========================= */}
+
       <footer className="bg-dark text-white py-4 mt-5">
+
         <div className="container text-center">
 
           <p className="m-0 fw-light">
-            🌱 <strong>Huerto Hogar</strong> -
-            Evaluación FullStack DSY1104 | Duoc UC
+            🌱 <strong>Huerto Hogar</strong> - Evaluación FullStack DSY1104 | Duoc UC
           </p>
 
           <small className="text-secondary">
@@ -492,6 +600,7 @@ export default function App() {
           </small>
 
         </div>
+
       </footer>
 
     </div>
