@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProductForm from './pages/admin/ProductForm';
 import { initialProducts } from './data/productos';
+import { initialUsers } from './data/usuarios';
 import { Routes, Route, Link } from 'react-router-dom';
 
 import Home from './pages/Home';
@@ -34,13 +35,31 @@ export default function App() {
   });
 
   const [carrito, setCarrito] = useState(() => {
-  const carritoGuardado = localStorage.getItem('carrito');
+    const carritoGuardado = localStorage.getItem('carrito');
 
-  return carritoGuardado
-    ? JSON.parse(carritoGuardado)
-    : [];
-});
+    return carritoGuardado
+      ? JSON.parse(carritoGuardado)
+      : [];
+  });
+
+  // USUARIOS
+  const [usuarios, setUsuarios] = useState(() => {
+    const usuariosGuardados = localStorage.getItem('usuarios');
+
+    return usuariosGuardados
+      ? JSON.parse(usuariosGuardados)
+      : initialUsers;
+  });
+  const [usuarioActual, setUsuarioActual] = useState(() => {
+    const usuarioGuardado = localStorage.getItem('usuarioActual');
+
+    return usuarioGuardado
+      ? JSON.parse(usuarioGuardado)
+      : null;
+  });
+
   const [busqueda, setBusqueda] = useState('');
+
   const [categoriaSeleccionada, setCategoriaSeleccionada] =
     useState('Todas');
 
@@ -66,11 +85,41 @@ export default function App() {
   }, [productos]);
 
   useEffect(() => {
-  localStorage.setItem(
-    'carrito',
-    JSON.stringify(carrito)
-  );
-}, [carrito]);
+    localStorage.setItem(
+      'carrito',
+      JSON.stringify(carrito)
+    );
+  }, [carrito]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      'usuarios',
+      JSON.stringify(usuarios)
+    );
+  }, [usuarios]);
+
+
+  // =========================
+  // USUARIOS
+  // =========================
+
+  const handleRegisterUser = (nuevoUsuario) => {
+
+    const usuarioCreado = {
+      ...nuevoUsuario,
+      id: Date.now(),
+      rol: 'cliente',
+      compras: []
+    };
+
+    setUsuarios((prev) => [
+      ...prev,
+      usuarioCreado
+    ]);
+  };
+  const handleLogin = (usuario) => {
+    setUsuarioActual(usuario);
+  };
 
 
   // =========================
@@ -90,9 +139,9 @@ export default function App() {
         return prev.map((item) =>
           item.id === product.id
             ? {
-                ...item,
-                cantidad: item.cantidad + 1,
-              }
+              ...item,
+              cantidad: item.cantidad + 1,
+            }
             : item
         );
       }
@@ -129,9 +178,9 @@ export default function App() {
       prev.map((producto) =>
         producto.id === id
           ? {
-              ...producto,
-              cantidad: producto.cantidad + 1,
-            }
+            ...producto,
+            cantidad: producto.cantidad + 1,
+          }
           : producto
       )
     );
@@ -145,9 +194,9 @@ export default function App() {
         .map((producto) =>
           producto.id === id
             ? {
-                ...producto,
-                cantidad: producto.cantidad - 1,
-              }
+              ...producto,
+              cantidad: producto.cantidad - 1,
+            }
             : producto
         )
         .filter(
@@ -170,9 +219,9 @@ export default function App() {
         prev.map((producto) =>
           producto.id === productoEditando.id
             ? {
-                ...producto,
-                ...nuevoProducto,
-              }
+              ...producto,
+              ...nuevoProducto,
+            }
             : producto
         )
       );
@@ -185,9 +234,6 @@ export default function App() {
 
 
     // CREAR PRODUCTO
-    // Los datos vienen directamente desde ProductForm:
-    // nombre, precio, categoria, descripcion e imagen
-
     setProductos((prev) => [
       ...prev,
       {
@@ -425,23 +471,18 @@ export default function App() {
               />
 
 
-              <button
-                className="btn btn-outline-light rounded-pill text-nowrap"
-                onClick={() => {
-
-                  setModoAdmin(!modoAdmin);
-
-                  setMostrarFormulario(false);
-
-                  setProductoEditando(null);
-                }}
-              >
-
-                {modoAdmin
-                  ? 'Salir Admin'
-                  : '⚙️ Admin'}
-
-              </button>
+              {usuarioActual?.rol === 'admin' && (
+                <button
+                  className="btn btn-outline-light rounded-pill text-nowrap"
+                  onClick={() => {
+                    setModoAdmin(!modoAdmin);
+                    setMostrarFormulario(false);
+                    setProductoEditando(null);
+                  }}
+                >
+                  {modoAdmin ? 'Salir Admin' : '⚙️ Admin'}
+                </button>
+              )}
 
             </div>
 
@@ -574,13 +615,9 @@ export default function App() {
           path="/checkout"
           element={
             <Checkout
-
               carrito={carrito}
-
-              onClearCart={
-                handleClearCart
-              }
-
+              onClearCart={handleClearCart}
+              usuarioActual={usuarioActual}
             />
           }
         />
@@ -629,7 +666,10 @@ export default function App() {
         <Route
           path="/registro"
           element={
-            <Registro />
+            <Registro
+              onRegister={handleRegisterUser}
+              usuarios={usuarios}
+            />
           }
         />
 
@@ -639,7 +679,10 @@ export default function App() {
         <Route
           path="/login"
           element={
-            <Login />
+            <Login
+              usuarios={usuarios}
+              onLogin={handleLogin}
+            />
           }
         />
 
@@ -739,7 +782,7 @@ export default function App() {
 
           <small className="text-secondary">
 
-            Desarrollado con React, Bootstrap y Vitest
+            Desarrollado con React, Bootstrap, Jasmine y Karma
 
           </small>
 
