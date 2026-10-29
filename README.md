@@ -1,3 +1,5 @@
+Inicia sesión con el admin: admin@huertohogar.cl / 123456
+
 🌱 Huerto Hogar
 Huerto Hogar es una aplicación web desarrollada con React para la venta de productos orgánicos, frutas y verduras.
 
