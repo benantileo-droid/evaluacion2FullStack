@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ProductForm from './pages/admin/ProductForm';
-import { initialProducts } from './data/productos';
-import { initialUsers } from './data/usuarios';
+import { getProductos, crearProducto, actualizarProducto, eliminarProducto,
+  getUsuarios, crearUsuario, agregarCompra
+} from './data/db';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 
 import Home from './pages/Home';
@@ -29,13 +30,7 @@ export default function App() {
   // ESTADOS
   // =========================
 
-  const [productos, setProductos] = useState(() => {
-    const productosGuardados = localStorage.getItem('productos');
-
-    return productosGuardados
-      ? JSON.parse(productosGuardados)
-      : initialProducts;
-  });
+  const [productos, setProductos] = useState(getProductos);
 
   const navigate = useNavigate();
 
@@ -48,13 +43,8 @@ export default function App() {
   });
 
   // USUARIOS
-  const [usuarios, setUsuarios] = useState(() => {
-    const usuariosGuardados = localStorage.getItem('usuarios');
+  const [usuarios, setUsuarios] = useState(getUsuarios);
 
-    return usuariosGuardados
-      ? JSON.parse(usuariosGuardados)
-      : initialUsers;
-  });
   const [usuarioActual, setUsuarioActual] = useState(() => {
     const usuarioGuardado = localStorage.getItem('usuarioActual');
 
@@ -82,12 +72,7 @@ export default function App() {
   // LOCAL STORAGE
   // =========================
 
-  useEffect(() => {
-    localStorage.setItem(
-      'productos',
-      JSON.stringify(productos)
-    );
-  }, [productos]);
+  
 
   useEffect(() => {
   if (usuarioActual) {
@@ -104,12 +89,7 @@ export default function App() {
     );
   }, [carrito]);
 
-  useEffect(() => {
-    localStorage.setItem(
-      'usuarios',
-      JSON.stringify(usuarios)
-    );
-  }, [usuarios]);
+  
 
 
   // =========================
@@ -117,22 +97,13 @@ export default function App() {
   // =========================
 
   const handleRegisterUser = (nuevoUsuario) => {
-
-    const usuarioCreado = {
-      ...nuevoUsuario,
-      id: Date.now(),
-      rol: 'cliente',
-      compras: []
-    };
-
-    setUsuarios((prev) => [
-      ...prev,
-      usuarioCreado
-    ]);
-  };
+  setUsuarios(crearUsuario(nuevoUsuario));
+};
   const handleLogin = (usuario) => {
     setUsuarioActual(usuario);
   };
+
+  
 
    const handleLogout = () => {
     setUsuarioActual(null);
@@ -141,29 +112,19 @@ export default function App() {
     setProductoEditando(null);
     navigate('/');
   };
+    
   const handleCompraExitosa = (orden) => {
-  if (!usuarioActual) {
-    return;
-  }
+    if (!usuarioActual) return;
 
-  const nuevasCompras = [
-    ...(usuarioActual.compras || []),
-    orden
-  ];
+    setUsuarios(agregarCompra(usuarioActual.id, orden));
 
-  setUsuarios((prev) =>
-    prev.map((usuario) =>
-      usuario.id === usuarioActual.id
-        ? { ...usuario, compras: nuevasCompras }
-        : usuario
-    )
-  );
+    setUsuarioActual((prev) => ({
+      ...prev,
+      compras: [...(prev.compras || []), orden]
+    }));
+  };
 
-  setUsuarioActual((prev) => ({
-    ...prev,
-    compras: nuevasCompras
-  }));
-};
+  
 
 
   // =========================
@@ -254,50 +215,22 @@ export default function App() {
   // ADMIN / CRUD
   // =========================
 
-  const handleSaveProduct = (nuevoProducto) => {
-
-    // EDITAR PRODUCTO
+    const handleSaveProduct = (nuevoProducto) => {
     if (productoEditando) {
-
-      setProductos((prev) =>
-        prev.map((producto) =>
-          producto.id === productoEditando.id
-            ? {
-              ...producto,
-              ...nuevoProducto,
-            }
-            : producto
-        )
-      );
-
+      setProductos(actualizarProducto(productoEditando.id, nuevoProducto));
       setProductoEditando(null);
       setMostrarFormulario(false);
-
       return;
     }
 
-
-    // CREAR PRODUCTO
-    setProductos((prev) => [
-      ...prev,
-      {
-        ...nuevoProducto,
-        id: Date.now(),
-      },
-    ]);
-
+    setProductos(crearProducto(nuevoProducto));
     setMostrarFormulario(false);
   };
 
 
   // ELIMINAR PRODUCTO
-  const handleDeleteProduct = (id) => {
-
-    setProductos((prev) =>
-      prev.filter(
-        (producto) => producto.id !== id
-      )
-    );
+    const handleDeleteProduct = (id) => {
+    setProductos(eliminarProducto(id));
   };
 
 
