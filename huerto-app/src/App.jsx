@@ -20,6 +20,7 @@ import Contacto from './pages/Contacto';
 import Blog from './pages/Blogs';
 import BlogDetail from './pages/BlogDetail';
 import UsuariosAdmin from './pages/admin/UsuariosAdmin';
+import Dashboard from './pages/admin/Dashboard';
 
 export default function App() {
 
@@ -494,8 +495,18 @@ export default function App() {
                 }
               />
 
+              {usuarioActual?.rol === 'admin' && (
+  <Link
+    to="/admin"
+    className="btn btn-outline-light rounded-pill text-nowrap"
+  >
+    📊 Dashboard
+  </Link>
+)}
+
 
               {usuarioActual?.rol === 'admin' && (
+                
                 <button
                   className="btn btn-outline-light rounded-pill text-nowrap"
                   onClick={() => {
@@ -655,10 +666,10 @@ export default function App() {
   }
 />
 <Route
-  path="/admin/usuarios"
+  path="/admin"
   element={
     usuarioActual?.rol === 'admin' ? (
-      <UsuariosAdmin usuarios={usuarios} />
+      <Dashboard productos={productos} usuarios={usuarios} />
     ) : (
       <Home />
     )
