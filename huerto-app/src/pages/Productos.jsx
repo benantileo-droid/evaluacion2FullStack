@@ -6,6 +6,7 @@ export default function Productos({
   productosFiltrados,
   categoriaSeleccionada,
   setCategoriaSeleccionada,
+  categorias = [],
   onAddToCart,
   onDelete,
   onEdit,
@@ -26,7 +27,7 @@ export default function Productos({
   </button>
 )}
 <div className="d-flex gap-2 mb-4">
-  {['Todas', 'Frutas', 'Verduras'].map((cat) => (
+    {['Todas', ...categorias.map((c) => c.nombre)].map((cat) => (
     <button
       key={cat}
       className={`btn rounded-pill px-4 ${

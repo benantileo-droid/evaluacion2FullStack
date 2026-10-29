@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ProductForm from './pages/admin/ProductForm';
 import { getProductos, crearProducto, actualizarProducto, eliminarProducto,
-  getUsuarios, crearUsuario, agregarCompra
+  getUsuarios, crearUsuario, agregarCompra, getCategorias
 } from './data/db';
+import { precioFinal } from './utils/precios';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 
 import Home from './pages/Home';
@@ -31,6 +32,8 @@ export default function App() {
   // =========================
 
   const [productos, setProductos] = useState(getProductos);
+
+  const [categorias] = useState(getCategorias);
 
   const navigate = useNavigate();
 
@@ -151,10 +154,11 @@ export default function App() {
         );
       }
 
-      return [
+            return [
         ...prev,
         {
           ...product,
+          precio: precioFinal(product),
           cantidad: 1,
         },
       ];
@@ -516,6 +520,8 @@ export default function App() {
 
               productos={productos}
 
+              categorias={categorias}
+
               productosFiltrados={
                 productosFiltrados
               }
@@ -555,13 +561,24 @@ export default function App() {
 
         {/* CATEGORÍAS */}
 
-        <Route
+                <Route
           path="/categorias"
           element={
             <Categoria
-              setCategoriaSeleccionada={
-                setCategoriaSeleccionada
-              }
+              categorias={categorias}
+              productos={productos}
+              onAddToCart={handleAddToCart}
+            />
+          }
+        />
+
+        <Route
+          path="/categorias/:nombre"
+          element={
+            <Categoria
+              categorias={categorias}
+              productos={productos}
+              onAddToCart={handleAddToCart}
             />
           }
         />
@@ -763,15 +780,9 @@ export default function App() {
             <div className="col-md-8">
 
               <ProductForm
-
-                onSave={
-                  handleSaveProduct
-                }
-
-                productoEditando={
-                  productoEditando
-                }
-
+                onSave={handleSaveProduct}
+                productoEditando={productoEditando}
+                categorias={categorias}
               />
 
             </div>

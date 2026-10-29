@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { estaEnOferta, precioFinal } from '../utils/precios';
 
 export default function ProductCard({
   product,
@@ -26,9 +27,20 @@ export default function ProductCard({
           <h5 className="card-title fw-bold text-dark mb-1">{product.nombre}</h5>
           <p className="card-text text-muted small mb-3">{product.descripcion || 'Producto fresco del huerto.'}</p>
           <div className="d-flex justify-content-between align-items-center mt-auto">
-  <span className="fs-4 fw-bold text-success">
-    ${product.precio}
-  </span>
+    {estaEnOferta(product) ? (
+    <div>
+      <small className="text-muted text-decoration-line-through d-block">
+        ${product.precio}
+      </small>
+      <span className="fs-4 fw-bold text-success">
+        ${precioFinal(product)}
+      </span>
+    </div>
+  ) : (
+    <span className="fs-4 fw-bold text-success">
+      ${product.precio}
+    </span>
+  )}
 
   {modoAdmin ? (
     <>

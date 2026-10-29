@@ -6,7 +6,9 @@ export const initialProducts = [
     precio: 1200,
     categoria: 'Frutas',
     descripcion: 'Manzanas rojas crujientes y 100% orgánicas.',
-    imagen: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400'
+    imagen: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400',
+    oferta: true,
+    descuento: 20
   },
 
   {
@@ -15,7 +17,10 @@ export const initialProducts = [
     precio: 990,
     categoria: 'Frutas',
     descripcion: 'Naranjas jugosas ideales para jugo matutino.',
-    imagen: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=400'
+    imagen: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=400',
+    oferta: true,
+    descuento: 20
+    
   },
 
   {

@@ -1,6 +1,6 @@
 import { initialProducts } from './productos';
 import { initialUsers } from './usuarios';
-
+import { initialCategories } from './categorias';
 // =========================
 // HELPERS DE PERSISTENCIA
 // =========================
@@ -86,4 +86,29 @@ export const agregarCompra = (idUsuario, orden) =>
         ? { ...u, compras: [...(u.compras || []), orden] }
         : u
     )
+  );
+// =========================
+// CATEGORÍAS (CRUD)
+// =========================
+
+export const getCategorias = () => leer('categorias', initialCategories);
+
+export const crearCategoria = (categoria) =>
+  guardar('categorias', [
+    ...getCategorias(),
+    { ...categoria, id: Date.now() }
+  ]);
+
+export const actualizarCategoria = (id, cambios) =>
+  guardar(
+    'categorias',
+    getCategorias().map((c) =>
+      c.id === id ? { ...c, ...cambios, id } : c
+    )
+  );
+
+export const eliminarCategoria = (id) =>
+  guardar(
+    'categorias',
+    getCategorias().filter((c) => c.id !== id)
   );
