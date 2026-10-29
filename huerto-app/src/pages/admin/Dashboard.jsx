@@ -1,14 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Dashboard({ productos = [], usuarios = [] }) {
-  // Todas las compras de todos los usuarios
-  const compras = usuarios.flatMap((usuario) =>
-    (usuario.compras || []).map((compra) => ({
-      ...compra,
-      cliente: compra.nombre || usuario.nombre
-    }))
-  );
+export default function Dashboard({
+  productos = [],
+  usuarios = [],
+  ordenes = []
+}) {
+  const compras = ordenes.map((orden) => ({
+    ...orden,
+    cliente: orden.nombre
+  }));
 
   const totalIngresos = compras.reduce(
     (acumulador, compra) => acumulador + (compra.total || 0),

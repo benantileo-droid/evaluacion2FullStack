@@ -112,3 +112,15 @@ export const eliminarCategoria = (id) =>
     'categorias',
     getCategorias().filter((c) => c.id !== id)
   );
+
+// =========================
+// ÓRDENES
+// =========================
+
+export const getOrdenes = () => leer('ordenes', []);
+
+export const getOrdenPorNumero = (numero) =>
+  getOrdenes().find((o) => o.numero === numero);
+
+export const crearOrden = (orden) =>
+  guardar('ordenes', [...getOrdenes(), orden]);

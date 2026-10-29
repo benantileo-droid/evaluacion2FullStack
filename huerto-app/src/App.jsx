@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import ProductForm from './pages/admin/ProductForm';
 import { getProductos, crearProducto, actualizarProducto, eliminarProducto,
-  getUsuarios, crearUsuario, agregarCompra, getCategorias
+  getUsuarios, crearUsuario, agregarCompra, getCategorias,
+  getOrdenes, crearOrden
 } from './data/db';
 import { precioFinal } from './utils/precios';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 
 import Home from './pages/Home';
 import Productos from './pages/Productos';
@@ -24,6 +25,9 @@ import BlogDetail from './pages/BlogDetail';
 import UsuariosAdmin from './pages/admin/UsuariosAdmin';
 import Dashboard from './pages/admin/Dashboard';
 import RutaAdmin from './components/RutaAdmin';
+import AdminLayout from './pages/admin/AdminLayout';
+import Ordenes from './pages/admin/Ordenes';
+import BoletaAdmin from './pages/admin/BoletaAdmin';
 
 export default function App() {
 
@@ -37,6 +41,9 @@ export default function App() {
 
   const navigate = useNavigate();
 
+  const location = useLocation();
+  const esRutaAdmin = location.pathname.startsWith('/admin');
+
   const [carrito, setCarrito] = useState(() => {
     const carritoGuardado = localStorage.getItem('carrito');
 
@@ -47,6 +54,8 @@ export default function App() {
 
   // USUARIOS
   const [usuarios, setUsuarios] = useState(getUsuarios);
+
+  const [ordenes, setOrdenes] = useState(getOrdenes);
 
   const [usuarioActual, setUsuarioActual] = useState(() => {
     const usuarioGuardado = localStorage.getItem('usuarioActual');
@@ -116,7 +125,9 @@ export default function App() {
     navigate('/');
   };
     
-  const handleCompraExitosa = (orden) => {
+    const handleCompraExitosa = (orden) => {
+    setOrdenes(crearOrden(orden));
+
     if (!usuarioActual) return;
 
     setUsuarios(agregarCompra(usuarioActual.id, orden));
@@ -312,7 +323,8 @@ export default function App() {
       {/* ========================= */}
       {/* NAVBAR */}
       {/* ========================= */}
-
+      {!esRutaAdmin && (
+      <footer className="bg-dark text-white py-4 mt-5 d-print-none">
       <nav className="navbar navbar-expand-lg navbar-dark bg-success sticky-top shadow-sm d-print-none ">
 
         <div className="container-fluid px-4">
@@ -494,6 +506,8 @@ export default function App() {
         </div>
 
       </nav>
+      </footer>
+      )}
 
 
       {/* ========================= */}
@@ -638,23 +652,37 @@ export default function App() {
     />
   }
 />
-<Route
-  path="/admin"
-  element={
-    <RutaAdmin usuarioActual={usuarioActual}>
-      <Dashboard productos={productos} usuarios={usuarios} />
-    </RutaAdmin>
-  }
-/>
-
-<Route
-  path="/admin/usuarios"
-  element={
-    <RutaAdmin usuarioActual={usuarioActual}>
-      <UsuariosAdmin usuarios={usuarios} />
-    </RutaAdmin>
-  }
-/>
+        <Route
+          path="/admin"
+          element={
+            <RutaAdmin usuarioActual={usuarioActual}>
+              <AdminLayout
+                usuarioActual={usuarioActual}
+                onLogout={handleLogout}
+              />
+            </RutaAdmin>
+          }
+        >
+          <Route
+            index
+            element={
+              <Dashboard
+                productos={productos}
+                usuarios={usuarios}
+                ordenes={ordenes}
+              />
+            }
+          />
+          <Route path="ordenes" element={<Ordenes ordenes={ordenes} />} />
+          <Route
+            path="ordenes/:numero"
+            element={<BoletaAdmin ordenes={ordenes} />}
+          />
+          <Route
+            path="usuarios"
+            element={<UsuariosAdmin usuarios={usuarios} />}
+          />
+        </Route>
 
 
         {/* COMPRA EXITOSA */}

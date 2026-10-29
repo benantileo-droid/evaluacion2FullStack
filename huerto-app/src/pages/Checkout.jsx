@@ -122,9 +122,9 @@ export default function Checkout({
 
     localStorage.setItem('ultimaOrden', JSON.stringify(orden));
 
-    if (usuarioActual) {
-      onCompraExitosa(orden);
-    }
+    
+    onCompraExitosa(orden);
+    
 
     onClearCart();
     navigate('/compra-exitosa');
