@@ -1,12 +1,14 @@
 import { useState } from 'react';
 
-const Registro = () => {
+const Registro = ({ onRegister, usuarios }) => {
   const [formData, setFormData] = useState({
-    nombre: '',
-    email: '',
-    password: '',
-    confirmarPassword: ''
-  });
+  nombre: '',
+  email: '',
+  password: '',
+  confirmarPassword: '',
+  direccion: '',
+  comuna: ''
+});
 
   const [errores, setErrores] = useState({});
 
@@ -28,6 +30,13 @@ const Registro = () => {
     if (formData.password !== formData.confirmarPassword) {
       nuevosErrores.confirmarPassword = 'Las contraseñas no coinciden';
     }
+    if (!formData.direccion.trim()) {
+  nuevosErrores.direccion = 'La dirección es obligatoria';
+}
+
+if (!formData.comuna.trim()) {
+  nuevosErrores.comuna = 'La comuna es obligatoria';
+}
 
     setErrores(nuevosErrores);
     return Object.keys(nuevosErrores).length === 0;
@@ -38,13 +47,20 @@ const Registro = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validar()) {
-      console.log('Formulario de registro válido:', formData);
-      alert('Registro exitoso');
-      // Aquí puedes agregar la lógica para enviar los datos a tu backend
-    }
-  };
+  e.preventDefault();
+
+  if (validar()) {
+    onRegister({
+      nombre: formData.nombre,
+      email: formData.email,
+      password: formData.password,
+      direccion: formData.direccion,
+      comuna: formData.comuna
+    });
+
+    alert('Registro exitoso');
+  }
+};
 
   return (
     <div className="container mt-5">
@@ -73,6 +89,49 @@ const Registro = () => {
           <input type="password" name="confirmarPassword" className="form-control" value={formData.confirmarPassword} onChange={handleChange} />
           {errores.confirmarPassword && <small className="text-danger">{errores.confirmarPassword}</small>}
         </div>
+        <div className="mb-3">
+  <label htmlFor="direccion" className="form-label">
+    Dirección
+  </label>
+
+  <input
+    type="text"
+    className={`form-control ${errores.direccion ? 'is-invalid' : ''}`}
+    id="direccion"
+    name="direccion"
+    value={formData.direccion}
+    onChange={handleChange}
+    placeholder="Ej: Los Carrera 123"
+  />
+
+  {errores.direccion && (
+    <div className="invalid-feedback">
+      {errores.direccion}
+    </div>
+  )}
+</div>
+
+<div className="mb-3">
+  <label htmlFor="comuna" className="form-label">
+    Comuna
+  </label>
+
+  <input
+    type="text"
+    className={`form-control ${errores.comuna ? 'is-invalid' : ''}`}
+    id="comuna"
+    name="comuna"
+    value={formData.comuna}
+    onChange={handleChange}
+    placeholder="Ej: Melipilla"
+  />
+
+  {errores.comuna && (
+    <div className="invalid-feedback">
+      {errores.comuna}
+    </div>
+  )}
+</div>
 
         <button type="submit" className="btn btn-primary">Registrarse</button>
       </form>
