@@ -82,7 +82,7 @@ export default function Dashboard({
               <p className="text-muted small">
                 Administrar inventario y detalles de los productos.
               </p>
-              <Link to="/productos" className="btn btn-outline-success btn-sm">
+              <Link to="/admin/productos" className="btn btn-outline-success btn-sm">
                 Ir a productos
               </Link>
             </div>

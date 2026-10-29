@@ -4,6 +4,9 @@ import { NavLink, Outlet, Link } from 'react-router-dom';
 const enlaces = [
   { to: '/admin', texto: 'Dashboard', icono: '📊', end: true },
   { to: '/admin/ordenes', texto: 'Órdenes', icono: '🧾' },
+  { to: '/admin/productos', texto: 'Productos', icono: '📦' },
+  { to: '/admin/productos-criticos', texto: 'Críticos', icono: '⚠️' },
+  { to: '/admin/categorias', texto: 'Categorías', icono: '🏷️' },
   { to: '/admin/usuarios', texto: 'Usuarios', icono: '👥' }
 ];
 

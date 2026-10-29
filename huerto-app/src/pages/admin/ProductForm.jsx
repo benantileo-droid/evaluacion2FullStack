@@ -12,7 +12,8 @@ const formularioVacio = (categoria) => ({
   descripcion: '',
   imagen: '',
   oferta: false,
-  descuento: 20
+  descuento: 20,
+  stock: 10
 });
 
 export default function ProductForm({
@@ -34,7 +35,8 @@ export default function ProductForm({
         descripcion: productoEditando.descripcion,
         imagen: productoEditando.imagen,
         oferta: Boolean(productoEditando.oferta),
-        descuento: productoEditando.descuento || 20
+        descuento: productoEditando.descuento || 20,
+        stock: productoEditando.stock ?? 0
       });
     } else {
       setDatos(formularioVacio(categoriaInicial));
@@ -60,7 +62,8 @@ export default function ProductForm({
       descripcion: datos.descripcion,
       imagen: datos.imagen,
       oferta: datos.oferta,
-      descuento: datos.oferta ? Number(datos.descuento) : 0
+      descuento: datos.oferta ? Number(datos.descuento) : 0,
+      stock: Number(datos.stock)
     });
   };
 
@@ -155,6 +158,23 @@ export default function ProductForm({
           placeholder="https://..."
           value={datos.imagen}
           onChange={handleChange}
+          required
+        />
+      </div>
+
+            {/* STOCK */}
+      <div className="mb-3">
+        <label htmlFor="stockInput" className="form-label fw-semibold">
+          Stock
+        </label>
+        <input
+          type="number"
+          id="stockInput"
+          name="stock"
+          className="form-control"
+          value={datos.stock}
+          onChange={handleChange}
+          min="0"
           required
         />
       </div>

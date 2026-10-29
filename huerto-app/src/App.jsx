@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ProductForm from './pages/admin/ProductForm';
 import { getProductos, crearProducto, actualizarProducto, eliminarProducto,
-  getUsuarios, crearUsuario, agregarCompra, getCategorias,
-  getOrdenes, crearOrden
+  getUsuarios, crearUsuario, agregarCompra,
+  getCategorias, crearCategoria, actualizarCategoria, eliminarCategoria,
+  getOrdenes, crearOrden,
+  descontarStock, renombrarCategoriaProductos
 } from './data/db';
 import { precioFinal } from './utils/precios';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
@@ -28,6 +30,10 @@ import RutaAdmin from './components/RutaAdmin';
 import AdminLayout from './pages/admin/AdminLayout';
 import Ordenes from './pages/admin/Ordenes';
 import BoletaAdmin from './pages/admin/BoletaAdmin';
+import AdminProductos from './pages/admin/AdminProductos';
+import AdminProductoForm from './pages/admin/AdminProductoForm';
+import ProductosCriticos from './pages/admin/ProductosCriticos';
+import AdminCategorias from './pages/admin/AdminCategorias';
 
 export default function App() {
 
@@ -37,7 +43,7 @@ export default function App() {
 
   const [productos, setProductos] = useState(getProductos);
 
-  const [categorias] = useState(getCategorias);
+  const [categorias, setCategorias] = useState(getCategorias);
 
   const navigate = useNavigate();
 
@@ -127,6 +133,7 @@ export default function App() {
     
     const handleCompraExitosa = (orden) => {
     setOrdenes(crearOrden(orden));
+    setProductos(descontarStock(orden.productos));
 
     if (!usuarioActual) return;
 
@@ -246,6 +253,34 @@ export default function App() {
   // ELIMINAR PRODUCTO
     const handleDeleteProduct = (id) => {
     setProductos(eliminarProducto(id));
+  };
+
+    // ADMIN: productos
+  const handleCrearProducto = (datos) => {
+    setProductos(crearProducto(datos));
+  };
+
+  const handleActualizarProducto = (id, datos) => {
+    setProductos(actualizarProducto(id, datos));
+  };
+
+  // ADMIN: categorías
+  const handleCrearCategoria = (datos) => {
+    setCategorias(crearCategoria(datos));
+  };
+
+  const handleActualizarCategoria = (id, cambios) => {
+    const anterior = categorias.find((c) => c.id === id);
+
+    setCategorias(actualizarCategoria(id, cambios));
+
+    if (anterior && cambios.nombre && cambios.nombre !== anterior.nombre) {
+      setProductos(renombrarCategoriaProductos(anterior.nombre, cambios.nombre));
+    }
+  };
+
+  const handleEliminarCategoria = (id) => {
+    setCategorias(eliminarCategoria(id));
   };
 
 
@@ -681,6 +716,55 @@ export default function App() {
           <Route
             path="usuarios"
             element={<UsuariosAdmin usuarios={usuarios} />}
+          />
+        
+
+        <Route
+            path="productos"
+            element={
+              <AdminProductos
+                productos={productos}
+                onDelete={handleDeleteProduct}
+              />
+            }
+          />
+          <Route
+            path="productos/nuevo"
+            element={
+              <AdminProductoForm
+                productos={productos}
+                categorias={categorias}
+                onCreate={handleCrearProducto}
+                onUpdate={handleActualizarProducto}
+              />
+            }
+          />
+          <Route
+            path="productos/:id/editar"
+            element={
+              <AdminProductoForm
+                productos={productos}
+                categorias={categorias}
+                onCreate={handleCrearProducto}
+                onUpdate={handleActualizarProducto}
+              />
+            }
+          />
+          <Route
+            path="productos-criticos"
+            element={<ProductosCriticos productos={productos} />}
+          />
+          <Route
+            path="categorias"
+            element={
+              <AdminCategorias
+                categorias={categorias}
+                productos={productos}
+                onCreate={handleCrearCategoria}
+                onUpdate={handleActualizarCategoria}
+                onDelete={handleEliminarCategoria}
+              />
+            }
           />
         </Route>
 

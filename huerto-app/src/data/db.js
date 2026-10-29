@@ -124,3 +124,28 @@ export const getOrdenPorNumero = (numero) =>
 
 export const crearOrden = (orden) =>
   guardar('ordenes', [...getOrdenes(), orden]);
+
+// =========================
+// INVENTARIO / CATEGORÍAS EN PRODUCTOS
+// =========================
+
+// Descuenta el stock de los productos comprados (nunca baja de 0)
+export const descontarStock = (items) =>
+  guardar(
+    'productos',
+    getProductos().map((p) => {
+      const item = items.find((i) => i.id === p.id);
+      return item && typeof p.stock === 'number'
+        ? { ...p, stock: Math.max(0, p.stock - item.cantidad) }
+        : p;
+    })
+  );
+
+// Si se renombra una categoría, actualiza los productos que la usaban
+export const renombrarCategoriaProductos = (anterior, nueva) =>
+  guardar(
+    'productos',
+    getProductos().map((p) =>
+      p.categoria === anterior ? { ...p, categoria: nueva } : p
+    )
+  );
