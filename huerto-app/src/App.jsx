@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ProductForm from './pages/admin/ProductForm';
 import { initialProducts } from './data/productos';
 import { initialUsers } from './data/usuarios';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 
 import Home from './pages/Home';
 import Productos from './pages/Productos';
@@ -21,6 +21,7 @@ import Blog from './pages/Blogs';
 import BlogDetail from './pages/BlogDetail';
 import UsuariosAdmin from './pages/admin/UsuariosAdmin';
 import Dashboard from './pages/admin/Dashboard';
+import RutaAdmin from './components/RutaAdmin';
 
 export default function App() {
 
@@ -35,6 +36,8 @@ export default function App() {
       ? JSON.parse(productosGuardados)
       : initialProducts;
   });
+
+  const navigate = useNavigate();
 
   const [carrito, setCarrito] = useState(() => {
     const carritoGuardado = localStorage.getItem('carrito');
@@ -87,6 +90,14 @@ export default function App() {
   }, [productos]);
 
   useEffect(() => {
+  if (usuarioActual) {
+    localStorage.setItem('usuarioActual', JSON.stringify(usuarioActual));
+  } else {
+    localStorage.removeItem('usuarioActual');
+  }
+}, [usuarioActual]);
+
+  useEffect(() => {
     localStorage.setItem(
       'carrito',
       JSON.stringify(carrito)
@@ -121,6 +132,14 @@ export default function App() {
   };
   const handleLogin = (usuario) => {
     setUsuarioActual(usuario);
+  };
+
+   const handleLogout = () => {
+    setUsuarioActual(null);
+    setModoAdmin(false);
+    setMostrarFormulario(false);
+    setProductoEditando(null);
+    navigate('/');
   };
   const handleCompraExitosa = (orden) => {
   if (!usuarioActual) {
@@ -455,20 +474,24 @@ export default function App() {
               </Link>
 
 
-              <Link
-                className="nav-link"
-                to="/registro"
-              >
-                Registro
-              </Link>
-
-
-              <Link
-                className="nav-link text-nowrap"
-                to="/login"
-              >
-                Iniciar Sesión
-              </Link>
+              {!usuarioActual ? (
+  <>
+    <Link className="nav-link" to="/registro">Registro</Link>
+    <Link className="nav-link text-nowrap" to="/login">Iniciar Sesión</Link>
+  </>
+) : (
+  <>
+    <span className="nav-link text-white-50 text-nowrap">
+      👤 {usuarioActual.nombre}
+    </span>
+    <button
+      className="btn btn-link nav-link text-nowrap"
+      onClick={handleLogout}
+    >
+      Cerrar sesión
+    </button>
+  </>
+)}
 
 
               <Link
@@ -668,11 +691,18 @@ export default function App() {
 <Route
   path="/admin"
   element={
-    usuarioActual?.rol === 'admin' ? (
+    <RutaAdmin usuarioActual={usuarioActual}>
       <Dashboard productos={productos} usuarios={usuarios} />
-    ) : (
-      <Home />
-    )
+    </RutaAdmin>
+  }
+/>
+
+<Route
+  path="/admin/usuarios"
+  element={
+    <RutaAdmin usuarioActual={usuarioActual}>
+      <UsuariosAdmin usuarios={usuarios} />
+    </RutaAdmin>
   }
 />
 
