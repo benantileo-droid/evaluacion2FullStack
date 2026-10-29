@@ -7,6 +7,8 @@ export default function CompraExitosa() {
     return guardada ? JSON.parse(guardada) : null;
   });
 
+  const [emailEnviado, setEmailEnviado] = useState(false);
+
   return (
     <div className="container py-5">
       <div className="row justify-content-center">
@@ -36,7 +38,11 @@ export default function CompraExitosa() {
 
                   <h5 className="fw-bold">Datos de entrega</h5>
                   <p className="mb-1">Cliente: {orden.nombre}</p>
-                  <p className="mb-1">Dirección: {orden.direccion}, {orden.comuna}</p>
+                                    <p className="mb-1">Correo: {orden.correo}</p>
+                  <p className="mb-1">Dirección: {orden.direccion}, {orden.comuna}, {orden.region}</p>
+                  {orden.indicaciones && (
+                    <p className="mb-1">Indicaciones: {orden.indicaciones}</p>
+                  )}
                   <p className="mb-3">Tipo de entrega: {orden.tipoEntrega}</p>
 
                   <h5 className="fw-bold">Productos</h5>
@@ -69,7 +75,30 @@ export default function CompraExitosa() {
                 </div>
               )}
 
-              <div className="text-center">
+                            {emailEnviado && (
+                <div className="alert alert-success mt-4 d-print-none">
+                  Boleta enviada a {orden?.correo} (simulación).
+                </div>
+              )}
+
+              <div className="text-center d-print-none">
+                {orden && (
+                  <div className="mt-4">
+                    <button
+                      className="btn btn-danger btn-sm me-2"
+                      onClick={() => window.print()}
+                    >
+                      Imprimir boleta en PDF
+                    </button>
+                    <button
+                      className="btn btn-success btn-sm"
+                      onClick={() => setEmailEnviado(true)}
+                    >
+                      Enviar boleta por email
+                    </button>
+                  </div>
+                )}
+
                 <Link
                   to="/productos"
                   className="btn btn-success rounded-pill px-4 mt-4"

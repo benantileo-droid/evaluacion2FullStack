@@ -309,7 +309,7 @@ export default function App() {
       {/* NAVBAR */}
       {/* ========================= */}
 
-      <nav className="navbar navbar-expand-lg navbar-dark bg-success sticky-top shadow-sm">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-success sticky-top shadow-sm d-print-none ">
 
         <div className="container-fluid px-4">
 
@@ -787,7 +787,7 @@ export default function App() {
       {/* FOOTER */}
       {/* ========================= */}
 
-      <footer className="bg-dark text-white py-4 mt-5">
+      <footer className="bg-dark text-white py-4 mt-5 d-print-none">
 
         <div className="container text-center">
 
