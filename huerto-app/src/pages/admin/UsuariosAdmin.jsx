@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-export default function UsuariosAdmin({ usuarios }) {
+export default function UsuariosAdmin({ usuarios, onDelete }) {
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
 
   return (
     <div className="container py-5">
-      <h1 className="fw-bold text-success mb-4">
-        Administración de Usuarios
-      </h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="fw-bold text-success mb-0">Administración de Usuarios</h1>
+        <Link to="/admin/usuarios/nuevo" className="btn btn-success">
+          ➕ Nuevo usuario
+        </Link>
+      </div>
 
       <div className="card border-0 shadow-sm">
         <div className="card-body">
@@ -47,14 +51,28 @@ export default function UsuariosAdmin({ usuarios }) {
 
                     <td>{usuario.compras?.length || 0}</td>
 
-                    <td>
+                                        <td className="text-nowrap">
                       <button
-                        className="btn btn-outline-success btn-sm"
-                        onClick={() =>
-                          setUsuarioSeleccionado(usuario)
-                        }
+                        className="btn btn-outline-success btn-sm me-2"
+                        onClick={() => setUsuarioSeleccionado(usuario)}
                       >
                         Ver historial
+                      </button>
+                      <Link
+                        to={"/admin/usuarios/" + usuario.id + "/editar"}
+                        className="btn btn-warning btn-sm me-2"
+                      >
+                        ✏️ Editar
+                      </Link>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => {
+                          if (window.confirm("¿Eliminar a " + usuario.nombre + "?")) {
+                            onDelete(usuario.id);
+                          }
+                        }}
+                      >
+                        🗑️ Eliminar
                       </button>
                     </td>
                   </tr>

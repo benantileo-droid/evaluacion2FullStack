@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProductForm from './pages/admin/ProductForm';
 import { getProductos, crearProducto, actualizarProducto, eliminarProducto,
-  getUsuarios, crearUsuario, agregarCompra,
+  getUsuarios, crearUsuario, actualizarUsuario, eliminarUsuario, agregarCompra,
   getCategorias, crearCategoria, actualizarCategoria, eliminarCategoria,
   getOrdenes, crearOrden,
   descontarStock, renombrarCategoriaProductos
@@ -34,7 +34,7 @@ import AdminProductos from './pages/admin/AdminProductos';
 import AdminProductoForm from './pages/admin/AdminProductoForm';
 import ProductosCriticos from './pages/admin/ProductosCriticos';
 import AdminCategorias from './pages/admin/AdminCategorias';
-
+import AdminUsuarioForm from "./pages/admin/AdminUsuarioForm";
 export default function App() {
 
   // =========================
@@ -120,6 +120,32 @@ export default function App() {
   const handleLogin = (usuario) => {
     setUsuarioActual(usuario);
   };
+
+  const handleCrearUsuario = (datos) => {
+  setUsuarios(crearUsuario(datos));
+};
+
+const handleActualizarUsuario = (id, cambios) => {
+  // Un admin no puede quitarse a sí mismo el rol de administrador
+  const seguros =
+    usuarioActual && usuarioActual.id === id
+      ? { ...cambios, rol: usuarioActual.rol }
+      : cambios;
+
+  setUsuarios(actualizarUsuario(id, seguros));
+
+  if (usuarioActual && usuarioActual.id === id) {
+    setUsuarioActual((prev) => ({ ...prev, ...seguros }));
+  }
+};
+
+const handleEliminarUsuario = (id) => {
+  if (usuarioActual && usuarioActual.id === id) {
+    alert("No puedes eliminar tu propio usuario");
+    return;
+  }
+  setUsuarios(eliminarUsuario(id));
+};
 
   
 
@@ -709,9 +735,23 @@ export default function App() {
             element={<BoletaAdmin ordenes={ordenes} />}
           />
           <Route
-            path="usuarios"
-            element={<UsuariosAdmin usuarios={usuarios} />}
-          />
+  path="usuarios"
+  element={
+    <UsuariosAdmin usuarios={usuarios} onDelete={handleEliminarUsuario} />
+  }
+/>
+<Route
+  path="usuarios/nuevo"
+  element={
+    <AdminUsuarioForm usuarios={usuarios} onCreate={handleCrearUsuario} />
+  }
+/>
+<Route
+  path="usuarios/:id/editar"
+  element={
+    <AdminUsuarioForm usuarios={usuarios} onUpdate={handleActualizarUsuario} />
+  }
+/>
         
 
         <Route
