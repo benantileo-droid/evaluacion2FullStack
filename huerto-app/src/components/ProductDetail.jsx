@@ -51,11 +51,12 @@ export default function ProductDetail({ productos, onAddToCart }) {
           )}
 
           <button
-            className="btn btn-success me-2"
-            onClick={() => onAddToCart(product)}
-          >
-            Agregar al carrito
-          </button>
+  className="btn btn-success me-2"
+  onClick={() => onAddToCart(product)}
+  disabled={product.stock === 0}
+>
+  {product.stock === 0 ? "Sin stock" : "Agregar al carrito"}
+</button>
         </div>
 
       </div>

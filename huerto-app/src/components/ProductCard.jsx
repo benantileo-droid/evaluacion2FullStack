@@ -61,11 +61,12 @@ export default function ProductCard({
   ) : (
     <>
       <button
-        className="btn btn-success btn-sm"
-        onClick={() => onAddToCart(product)}
-      >
-        + Agregar
-      </button>
+  className="btn btn-success btn-sm"
+  onClick={() => onAddToCart(product)}
+  disabled={product.stock === 0}
+>
+  {product.stock === 0 ? "Sin stock" : "+ Agregar"}
+</button>
 
       <Link
         to={`/productos/${product.id}`}

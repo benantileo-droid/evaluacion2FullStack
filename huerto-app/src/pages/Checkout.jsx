@@ -30,6 +30,7 @@ function Campo({ label, name, value, onChange, error, placeholder, type = 'text'
 
 export default function Checkout({
   carrito,
+  productos,
   onClearCart,
   usuarioActual,
   onCompraExitosa
@@ -94,6 +95,15 @@ export default function Checkout({
 
   const confirmarCompra = () => {
     if (!validar()) return;
+
+  const sinStock = carrito.find((item) => {
+  const prod = productos.find((p) => p.id === item.id);
+  return typeof prod?.stock === "number" && item.cantidad > prod.stock;
+});
+if (sinStock) {
+  alert("No hay stock suficiente de " + sinStock.nombre);
+  return;
+}
 
     const orden = {
       numero: 'ORD-' + Date.now(),

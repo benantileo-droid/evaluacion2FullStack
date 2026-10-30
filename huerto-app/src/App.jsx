@@ -153,35 +153,28 @@ export default function App() {
   // =========================
 
   const handleAddToCart = (product) => {
+  const stock = typeof product.stock === "number" ? product.stock : Infinity;
+  const enCarrito = carrito.find((item) => item.id === product.id)?.cantidad || 0;
 
-    setCarrito((prev) => {
+  if (stock <= 0) {
+    alert("Producto sin stock");
+    return;
+  }
+  if (enCarrito >= stock) {
+    alert("Solo quedan " + stock + " unidades de " + product.nombre);
+    return;
+  }
 
-      const existe = prev.find(
-        (item) => item.id === product.id
+  setCarrito((prev) => {
+    const existe = prev.find((item) => item.id === product.id);
+    if (existe) {
+      return prev.map((item) =>
+        item.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item
       );
-
-      if (existe) {
-
-        return prev.map((item) =>
-          item.id === product.id
-            ? {
-              ...item,
-              cantidad: item.cantidad + 1,
-            }
-            : item
-        );
-      }
-
-            return [
-        ...prev,
-        {
-          ...product,
-          precio: precioFinal(product),
-          cantidad: 1,
-        },
-      ];
-    });
-  };
+    }
+    return [...prev, { ...product, precio: precioFinal(product), cantidad: 1 }];
+  });
+};
 
 
   const handleClearCart = () => {
@@ -200,18 +193,19 @@ export default function App() {
 
 
   const handleIncreaseQuantity = (id) => {
+  const prod = productos.find((p) => p.id === id);
+  const stock = typeof prod?.stock === "number" ? prod.stock : Infinity;
+  const actual = carrito.find((item) => item.id === id)?.cantidad || 0;
 
-    setCarrito((prev) =>
-      prev.map((producto) =>
-        producto.id === id
-          ? {
-            ...producto,
-            cantidad: producto.cantidad + 1,
-          }
-          : producto
-      )
-    );
-  };
+  if (actual >= stock) {
+    alert("No hay más stock disponible");
+    return;
+  }
+
+  setCarrito((prev) =>
+    prev.map((p) => (p.id === id ? { ...p, cantidad: p.cantidad + 1 } : p))
+  );
+};
 
 
   const handleDecreaseQuantity = (id) => {
@@ -680,11 +674,12 @@ export default function App() {
   path="/checkout"
   element={
     <Checkout
-      carrito={carrito}
-      onClearCart={handleClearCart}
-      usuarioActual={usuarioActual}
-      onCompraExitosa={handleCompraExitosa}
-    />
+  carrito={carrito}
+  productos={productos}
+  onClearCart={handleClearCart}
+  usuarioActual={usuarioActual}
+  onCompraExitosa={handleCompraExitosa}
+/>
   }
 />
         <Route
